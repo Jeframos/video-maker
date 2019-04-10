@@ -17,31 +17,25 @@ async function robot(content){
     }
 
     function sanitizeContent(content) {
-        const withoutBlankLines = removeBlankLines(content.sourceContentOriginal)
-        const withoutMarkdown =  removeMarkdown(withoutBlankLines)
-        console.log(withoutMarkdown)
+        const withoutBlankLinesAndMarkdown = removeBlankLinesAndMarkdown(content.sourceContentOriginal)
+        const withoutDatesInParentheses = removeDatesInParentheses(withoutBlankLinesAndMarkdown)
+        console.log(withoutDatesInParentheses)
 
-        function removeBlankLines(text){
+        function removeBlankLinesAndMarkdown(text){
             const allLines = text.split('\n')
             
-            const withoutBlankLines = allLines.filter((line) =>{
-                if (line.trim().length === 0){
+            const withoutBlankLinesAndMarkdown = allLines.filter((line) =>{
+                if (line.trim().length === 0 || line.trim().startsWith('=')){
                     return false
                 }
                 return true
             })
-            return withoutBlankLines
+            return withoutBlankLinesAndMarkdown.join(' ')
         }
     }
     
-    function removeMarkdown(line){
-        const withoutMarkdown = lines.filter((line) =>{
-            if (line.trim().startsWith('=')) {
-                return false
-            }
-            return true
-        })
-        return withoutMarkdown
+    function removeDatesInParentheses(text) {
+        return text.replace(/\((?:\([^()]*\)|[^()])*\)/gm, '').replace(/  /g,' ')
     }
 
 }
